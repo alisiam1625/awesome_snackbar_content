@@ -1,0 +1,30 @@
+name: Xcode - Build and Analyze
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and analyze Xcode project
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: List project files
+        run: ls -R
+
+      - name: Install CocoaPods (if needed)
+        run: pod install
+
+      - name: Build project
+        run: |
+          xcodebuild clean build analyze \
+          -workspace "YourProject.xcworkspace" \
+          -scheme "YourScheme" \
+          -sdk iphonesimulator \
+          -destination 'platform=iOS Simulator,name=iPhone 14' | xcpretty
